@@ -1,0 +1,2 @@
+round_epochs,loss,batch_size,dropout,epochs,first_neuron,last_activation,lr,optimizer,second_neuron
+500,0.015173596277972615,1,0.5,500,14,relu,4.0600000000000005,Nadam,70

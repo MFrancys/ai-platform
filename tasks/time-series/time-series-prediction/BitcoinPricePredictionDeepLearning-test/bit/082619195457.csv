@@ -1,0 +1,2 @@
+round_epochs,loss,batch_size,dropout,epochs,first_neuron,last_activation,lr,optimizer,second_neuron
+500,0.012626864754933888,1,0.5,500,28,relu,9.01,Adam,70
