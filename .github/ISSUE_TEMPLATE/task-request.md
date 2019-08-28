@@ -1,7 +1,7 @@
 ---
-name: BitcoinPricePrediction
-about: Bitcoin Price Closing Daily Prediction with Deep Learning
-title: 'PREDICTION OF DAILY CLOSING PRICES OF BITCOIN WITH RECURRENT NEURAL NETWORKS (with LSTM) AND HYPERPARAMETER OPTIMIZATION WITH KERAS MODELS'
+name: AnalysisTweets
+about: AnalysisTweets get the tweets posted by a user and apply NLP of them
+title: 'Analysis of a user's tweets with NLP'
 labels: task
 assignees: ''
 
@@ -9,19 +9,33 @@ assignees: ''
 
 # Goal(s)
 
-- Predict Daily Closing Price Bitcoin wiht Deep Learnning and Hyperparameter
+- TWEETS ANALYSIS PUBLISHED BY DONALD TRUMP WITH NATURAL PROCESSING LANGUAGE(NLP)
 
 # Input(s)
 
-- Bitcoin daily Prices
+- Twitter Credentials
+- User ScreenName
 
 # Output(s)
 
-- Predictions of Daily Closing Price Bitcoin
-- Best Model LSTM
+- Account information
+- Number of tweets
+- Number or retweets
+- Number of positive tweets
+- Number of negative tweets
+- Word Cloud
+- Most used words in the twitters
+- Dominant topic in each tweets
+- Topics distribution across tweets
+- Topic-keyword Matrix
+- Tweets cluster by similarity of Topics
 
 # Objective Function(s)
 
-- extraction_features_ts
-- get_predictions_lstm
-- graph_predictions
+- graph_analysis_twitter
+- classes_wordcloud
+- graph_count_words
+- get_best_lda
+- show_topics
+- KMeans(sklearn)
+- TruncatedSVD(sklearn)
