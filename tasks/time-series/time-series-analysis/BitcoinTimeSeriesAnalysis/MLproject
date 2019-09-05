@@ -1,0 +1,9 @@
+name: BitcoinTimeSeriesAnalysis
+
+conda_env: conda.yaml
+
+entry_points:
+  main:   
+    parameters:
+      none
+    command: "python timeseriesanalysis.py"
