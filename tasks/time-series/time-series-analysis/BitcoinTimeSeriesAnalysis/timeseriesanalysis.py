@@ -20,7 +20,7 @@ from statsmodels.tsa.stattools import adfuller, kpss
 from statsmodels.tsa.stattools import acf, pacf
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
-### Import modules created to processing and graph data Bitcoin 
+### Import modules created to processing and graph data Bitcoin
 from src.timeserie_graphs import ts_graph_line
 from src.timeserie_graphs import violin_plot
 from src.timeserie_graphs import graph_additive_decomposition
@@ -33,7 +33,7 @@ from src.build_features import extraction_features_ts
 import mlflow
 
 if __name__ == "__main__":
-    ###Import and load time series Bitcoin by hour 
+    ###Import and load time series Bitcoin by hour
     TARGET = "Close"
     ohlc_dict = {
         "Open": "first",
@@ -47,43 +47,43 @@ if __name__ == "__main__":
     df_hourly_bitcoin = pd.read_csv(file_bitcoin)
 
     # start mlflow run
-    with mlflow.start_run():        
+    with mlflow.start_run():
         print("Variable Types \n",df_hourly_bitcoin, "\n")
         print("Bitcoin Time Series Head \n", df_hourly_bitcoin.head(), "\n")
         print("Bitcoin Time Series Tail \n", df_hourly_bitcoin.tail(), "\n")
-        
+
         time_resample = "1D" # End time unit in which events will be predicted
 
-        ###Resample the original dataset close price Bitcoin for hours to events per day, 
+        ###Resample the original dataset close price Bitcoin for hours to events per day,
         ###in order to obtain the close price Bitcoin presented per day.
         df_daily = df_hourly_bitcoin. \
         set_index(pd.to_datetime(df_hourly_bitcoin["Timestamp"])). \
         resample(rule=time_resample, how=ohlc_dict)
-        
+
         ###Graph Bitcoin TimeSeries
         title=f'BITCOIN TIMESERIE BY DAY'
         fig_graph_line = ts_graph_line(df_daily, TARGET, title)
     #   py.offline.iplot(fig_graph_line)
-        
-        fig_graph_line_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday.png")
+
+        fig_graph_line_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday.png")
         fig_graph_line.write_image(fig_graph_line_path)
-        mlflow.log_artifact(fig_graph_line_path) 
-            
+        mlflow.log_artifact(fig_graph_line_path)
+
         ###Graph Additive Decomposition
         graph_additive = graph_additive_decomposition(df_daily, TARGET) #Graph Additive Decomposition
         graph_additive.plot()
-        
+
         ###Normalized Histogram
         x = df_daily[TARGET]
         fig_graph_histogram = go.Figure(data=[go.Histogram(x=x, histnorm='probability')])
         # Edit the layout
         fig_graph_histogram.update_layout(title="Normalized Histogram of Close Price Bitcoin")
     #  fig_graph_histogram.show()
-        
-        fig_graph_histogram_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_normalizedhistogram.png")
+
+        fig_graph_histogram_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_normalizedhistogram.png")
         fig_graph_histogram.write_image(fig_graph_histogram_path)
         mlflow.log_artifact(fig_graph_histogram_path)
-        
+
         ###Graph violin plot by month, weeks and daily of week
         df_daily = df_daily.assign(
             dayofweek=df_daily.index.dayofweek,
@@ -94,36 +94,36 @@ if __name__ == "__main__":
         time = "month"
         fig_violin_month = violin_plot(df_daily, TARGET, time)
     # fig_violin_month.show()
-        
-        fig_violin_month_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_violin_month.png")
+
+        fig_violin_month_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_violin_month.png")
         fig_violin_month.write_image(fig_violin_month_path)
         mlflow.log_artifact(fig_violin_month_path)
-        
+
         time = "dayofweek"
         fig_violin_dayofweek = violin_plot(df_daily, TARGET, time)
     #    fig_violin_dayofweek.show()
-        
-        fig_violin_dayofweek_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_violin_dayofweek.png")
+
+        fig_violin_dayofweek_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_violin_dayofweek.png")
         fig_violin_dayofweek.write_image(fig_violin_dayofweek_path)
         mlflow.log_artifact(fig_violin_dayofweek_path)
-        
+
         time = "week"
         fig_violin_week = violin_plot(df_daily, TARGET, time)
     #   fig_violin_week.show()
-        
-        fig_violin_week_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_violin_week.png")
+
+        fig_violin_week_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_violin_week.png")
         fig_violin_week.write_image(fig_violin_week_path)
         mlflow.log_artifact(fig_violin_dayofweek_path)
-        
+
         ###Identify outliers in dataset daily
-        df_daily["day_outlier"] = identify_outliers(df_daily, TARGET)    
+        df_daily["day_outlier"] = identify_outliers(df_daily, TARGET)
         fig_graph_outlier = graph_outliers(df_daily, TARGET)
     #    py.offline.iplot(fig_graph_outlier)
-            
-        fig_graph_outlier_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_outlier.png")
+
+        fig_graph_outlier_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_outlier.png")
         fig_graph_outlier.write_image(fig_graph_outlier_path)
         mlflow.log_artifact(fig_graph_outlier_path)
-        
+
         # Calculate ACF and PACF upto 50 lags and Draw Plot
         fig, axes = plt.subplots(1,2,figsize=(16,3), dpi= 100)
         plot_acf(df_daily[TARGET], lags=50, ax=axes[0])
@@ -131,19 +131,19 @@ if __name__ == "__main__":
         fig_path = os.path.join(ROOT_PATH, "images//acf_pacf.png")
         fig.savefig(fig_path)
         mlflow.log_artifact(fig_path)
-        
+
         ###Test stationary with ADF Test
         df_daily[f"{TARGET}_diff"], result = test_stationary(df_daily, TARGET)
 
         mlflow.log_metric("ADF p-value", result)
-        
+
         #Graph Diff Bitcoin TimeSeries
         title=f'BITCOIN STATIONARY TIMESERIE BY DAY'
         TARGET = f"{TARGET}_diff"
         fig_graph_stationary = ts_graph_line(df_daily, TARGET, title)
     #  py.offline.iplot(fig_graph_line)
-        
-        fig_graph_stationary_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_stationary.png")
+
+        fig_graph_stationary_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_stationary.png")
         fig_graph_stationary.write_image(fig_graph_stationary_path)
         mlflow.log_artifact(fig_graph_stationary_path)
 
@@ -161,7 +161,7 @@ if __name__ == "__main__":
         fig_correlation_features = graph_correlation_features(df_features_bitcoin, lag)
         #fig_correlation_features.show()
 
-        fig_correlation_features_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_featureslag1.png")
+        fig_correlation_features_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_featureslag1.png")
         fig_correlation_features.write_image(fig_correlation_features_path)
         mlflow.log_artifact(fig_correlation_features_path)
 
@@ -169,6 +169,6 @@ if __name__ == "__main__":
         fig_correlation_features = graph_correlation_features(df_features_bitcoin, lag)
         #fig_correlation_features.show()
 
-        fig_correlation_features_path = os.path.join(ROOT_PATH, "images//bitcointimeseriebyday_featureslag2.png")
+        fig_correlation_features_path = os.path.join(ROOT_PATH, "bitcointimeseriebyday_featureslag2.png")
         fig_correlation_features.write_image(fig_correlation_features_path)
         mlflow.log_artifact(fig_correlation_features_path)
